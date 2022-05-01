@@ -34,9 +34,19 @@ contract Lottery is Ownable {
         // todo
     }
 
+    function withdraw() public onlyOwner {
+        (bool sent, /* data */) = owner().call{ value: _balance }(""); // unable to withdraw lottery reward
+        _balance = 0;
+        require(sent, "Lottery: ETH transfer failed.");
+    }
+
     function getTimeLeft() public view returns(uint) {
         if (block.timestamp >= endsAt) return 0;
         return endsAt - block.timestamp;
+    }
+
+    function getBalance() public view returns(uint) {
+        return address(this).balance;
     }
 
 }
