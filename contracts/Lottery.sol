@@ -16,6 +16,7 @@ contract Lottery is Ownable {
     uint256 immutable endsAt;
 
     constructor(uint256 _minParticipate, uint64 endsIn) payable {
+        require(msg.value > 0, "Lottery: Reward cannot be 0.");
         reward = msg.value;
         minParticipate = _minParticipate;
         endsAt = block.timestamp + endsIn;
