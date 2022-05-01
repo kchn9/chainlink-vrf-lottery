@@ -9,6 +9,8 @@ import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 contract Lottery is Ownable, VRFConsumerBaseV2 {
     using Counters for Counters.Counter;
 
+    event WinnerFound(address winner, uint256 rewardSent);
+
     Counters.Counter participantCounter;
     mapping ( uint => address ) participants;
 
@@ -47,7 +49,7 @@ contract Lottery is Ownable, VRFConsumerBaseV2 {
     function drawWinner() public {
         require(getTimeLeft() == 0, "Lottery: Lottery is not closed yet.");
         require(!isExectued, "Lottery: Lottery has found winner already.");
-        isExectued = true;
+        isExectued = true; // prevent re-entrancy
         _requestRandomWords();
     }
 
@@ -62,8 +64,10 @@ contract Lottery is Ownable, VRFConsumerBaseV2 {
 
     function _sendRewardToWinner(uint256 _winnerIdx) internal {
         address winner = participants[_winnerIdx];
+        emit WinnerFound(winner, reward);        
         (bool sent, /* data */) = winner.call{ value: reward }("");
         require(sent, "Lottery: ETH transfer failed.");
+
     } 
 
     function withdraw() public onlyOwner {
