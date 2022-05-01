@@ -25,6 +25,8 @@ contract Lottery is Ownable, VRFConsumerBaseV2 {
     uint256 immutable public minParticipate;
     uint256 immutable private _endsAt;
 
+    bool isExectued;
+
     constructor(uint256 _minParticipate, uint64 _endsIn, uint64 _VRFSubscriptionId) VRFConsumerBaseV2(_coordinatorAddress) payable {
         require(msg.value > 0, "Lottery: Reward cannot be 0.");
         reward = msg.value;
@@ -44,6 +46,8 @@ contract Lottery is Ownable, VRFConsumerBaseV2 {
 
     function drawWinner() public {
         require(getTimeLeft() == 0, "Lottery: Lottery is not closed yet.");
+        require(!isExectued, "Lottery: Lottery has found winner already.");
+        isExectued = true;
         _requestRandomWords();
     }
 
@@ -52,7 +56,15 @@ contract Lottery is Ownable, VRFConsumerBaseV2 {
     }
 
     function fulfillRandomWords(uint256 /* requestId */, uint256[] memory _randWords) internal override {
+        uint256 winnerIdx = _randWords[0] % (participantCounter.current() + 1);
+        _sendRewardToWinner(winnerIdx);
     }
+
+    function _sendRewardToWinner(uint256 _winnerIdx) internal {
+        address winner = participants[_winnerIdx];
+        (bool sent, /* data */) = winner.call{ value: reward }("");
+        require(sent, "Lottery: ETH transfer failed.");
+    } 
 
     function withdraw() public onlyOwner {
         (bool sent, /* data */) = owner().call{ value: _balance }(""); // unable to withdraw lottery reward
