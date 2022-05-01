@@ -1,0 +1,25 @@
+{
+  "name": "chainlink-vrf-lottery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kchn9/chainlink-vrf-lottery.git"
+  },
+  "author": "kchn9",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kchn9/chainlink-vrf-lottery/issues"
+  },
+  "homepage": "https://github.com/kchn9/chainlink-vrf-lottery#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.6.0"
+  }
+}
