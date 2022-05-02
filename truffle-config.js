@@ -18,7 +18,7 @@
  *
  */
 
-require("dotenv").config({ path: "./" });
+require("dotenv").config();
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 const mnemonic = process.env.MNEMONIC;
@@ -60,9 +60,10 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     rinkeby: {
-      provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/${infuraProjectId}`),
+      provider: () => new HDWalletProvider(mnemonic, `wss://rinkeby.infura.io/ws/v3/${infuraProjectId}`),
       network_id: 4,       // Rinkeby's id
       gas: 10_000_000,     // Rinkeby has a higher block limit than mainnet
+      networkCheckTimeout: 1000000,
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
     },
     // Useful for private networks
