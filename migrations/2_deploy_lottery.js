@@ -2,20 +2,14 @@ require("dotenv").config({ path: "../" });
 
 const Lottery = artifacts.require("./Lottery.sol");
 
-const deploymentSettings = {
-    participationMinimumValue: 100,
-    lotteryParticipationTime: 300,
-    lotteryReward: 10000,
-}
-
 module.exports = function (deployer) {
     deployer.deploy(
         Lottery, 
-        deploymentSettings.participationMinimumValue, 
-        deploymentSettings.lotteryParticipationTime, 
+        process.env.PARTICIPATION_THRESHOLD, 
+        process.env.PARTICIPATION_TIME, 
         process.env.VRF_SUBSCRIPTION_ID,
         {
-            value: deploymentSettings.lotteryReward
+            value: process.env.LOTTERY_REWARD
         }
     );
 };
